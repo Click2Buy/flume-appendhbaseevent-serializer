@@ -60,14 +60,14 @@ public class AppendHBase2EventSerializer implements HBase2EventSerializer {
     List<Row> actions = Lists.newArrayList();
     byte[] rowKey = this.payload;
 
-    if (rowKey.length == 0) {
+    String valueStr = headers.get(colName);
+    if (rowKey.length == 0 || valueStr == null) {
       return Lists.newArrayList();
     }
 
     try {
       Append append = new Append(rowKey);
 
-      String valueStr = headers.get(colName);
       append.add(cf, colName.getBytes(charset), Bytes.toBytes(valueStr));
       actions.add(append);
     } catch (IllegalArgumentException e) {
